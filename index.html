@@ -3,64 +3,149 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Buscador de Animes - Intermedio</title>
+  <title>Buscador de Animes - Ejercicio useMemo</title>
   
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
-      max-width: 800px;
-      margin: 0 auto;
+      line-height: 1.5;
+      background-color: #f5f5f5;
+      color: #333;
       padding: 20px;
     }
     
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    h1, h2 {
+      color: #444;
+      margin-bottom: 15px;
+    }
+    
     h1 {
-      color: #333;
       text-align: center;
+      padding: 10px 0;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
     }
     
-    input, textarea {
-      margin-bottom: 10px;
-      padding: 8px;
+    .search-section {
+      margin-bottom: 20px;
+    }
+    
+    .search-input {
       width: 100%;
-      border: 1px solid #ddd;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
     }
     
-    button {
+    .add-section {
+      background-color: #fff;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .add-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .form-group label {
+      font-weight: bold;
+    }
+    
+    .form-group input, 
+    .form-group textarea {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    .add-button {
       padding: 8px 15px;
       background-color: #4a6ea9;
       color: white;
       border: none;
+      border-radius: 4px;
       cursor: pointer;
+      font-size: 14px;
+      align-self: flex-start;
     }
     
-    .search-section, .add-section, .results-section {
-      margin-bottom: 20px;
+    .add-button:hover {
+      background-color: #3a5a89;
+    }
+    
+    .results-section {
+      background-color: #fff;
       padding: 15px;
-      background-color: #f9f9f9;
-      border-radius: 5px;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     
-    ul {
-      padding-left: 0;
-      list-style-type: none;
+    .no-results {
+      text-align: center;
+      padding: 20px;
+      color: #666;
     }
     
-    li {
-      margin-bottom: 15px;
+    .anime-list {
+      list-style: none;
+    }
+    
+    .anime-item {
       padding: 10px;
-      border: 1px solid #eee;
-      border-radius: 5px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .anime-item:last-child {
+      border-bottom: none;
     }
     
     .anime-name {
       font-weight: bold;
-      color: #333;
       margin-bottom: 5px;
+      color: #333;
+    }
+    
+    .anime-description {
+      color: #555;
+      font-size: 14px;
+    }
+    
+    @media (max-width: 600px) {
+      .add-button {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -86,7 +171,22 @@
         { id: 12, name: "Steins;Gate", description: "Un autoproclamado científico loco descubre accidentalmente cómo enviar mensajes al pasado, alterando la línea temporal." },
         { id: 13, name: "Cowboy Bebop", description: "Un grupo de cazarrecompensas viaja por el sistema solar a bordo de la nave Bebop en un futuro distópico." },
         { id: 14, name: "Evangelion", description: "Adolescentes pilotan robots gigantes para defender a la humanidad de seres misteriosos en un mundo post-apocalíptico." },
-        { id: 15, name: "Code Geass", description: "Un príncipe exiliado con el poder de controlar mentes lidera una rebelión contra el imperio que conquistó su nación." }
+        { id: 15, name: "Code Geass", description: "Un príncipe exiliado con el poder de controlar mentes lidera una rebelión contra el imperio que conquistó su nación." },
+        { id: 16, name: "Sword Art Online", description: "Jugadores quedan atrapados en un MMORPG de realidad virtual donde morir en el juego significa morir en la vida real." },
+        { id: 17, name: "Your Name", description: "Dos adolescentes comienzan a intercambiar cuerpos aleatoriamente y deben adaptarse a la vida del otro." },
+        { id: 18, name: "Vinland Saga", description: "Un joven vikingo busca venganza contra el asesino de su padre mientras se ve envuelto en la guerra entre Inglaterra y los daneses." },
+        { id: 19, name: "Haikyuu!!", description: "Un estudiante de baja estatura se une al club de voleibol de su escuela con la determinación de convertirse en un gran jugador." },
+        { id: 20, name: "Black Clover", description: "Un huérfano sin poder mágico en un mundo donde la magia lo es todo, trabaja duro para obtener un grimorio raro y convertirse en el Rey Mago." },
+        { id: 21, name: "Made in Abyss", description: "Una niña se aventura en un abismo gigante en busca de su madre, descubriendo los peligros y secretos de este misterioso lugar." },
+        { id: 22, name: "Violet Evergarden", description: "Una ex-soldado trabaja como escritora de cartas mientras busca entender el significado de las últimas palabras que le dijo su mentor." },
+        { id: 23, name: "Mob Psycho 100", description: "Un estudiante con poderosas habilidades psíquicas busca vivir una vida normal mientras trabaja para un falso exorcista." },
+        { id: 24, name: "Re:Zero", description: "Un joven es transportado a un mundo de fantasía donde descubre que puede regresar en el tiempo cada vez que muere." },
+        { id: 25, name: "JoJo's Bizarre Adventure", description: "La saga multigeneracional de la familia Joestar y su batalla contra fuerzas sobrenaturales usando habilidades únicas." },
+        { id: 26, name: "One Punch Man", description: "Un superhéroe que puede derrotar a cualquier oponente con un solo golpe busca un desafío digno mientras lidia con el aburrimiento." },
+        { id: 27, name: "Bleach", description: "Un adolescente con habilidad para ver fantasmas se convierte en un Shinigami sustituto para proteger a los humanos de espíritus malignos." },
+        { id: 28, name: "Fairy Tail", description: "Un gremio de magos enfrenta numerosas aventuras mientras forman fuertes lazos de amistad y compañerismo." },
+        { id: 29, name: "Dr. Stone", description: "En un mundo donde toda la humanidad ha sido petrificada durante miles de años, un genio científico busca restaurar la civilización." },
+        { id: 30, name: "Mushoku Tensei", description: "Un hombre desempleado reencarna en un mundo de fantasía con sus recuerdos intactos, determinado a vivir su nueva vida sin arrepentimientos." }
       ]);
 
       const [searchText, setSearchText] = useState('');
@@ -116,25 +216,26 @@
       };
 
       return (
-        <div>
+        <div className="container">
           <h1>Buscador de Animes</h1>
           
-          {/* Sección de búsqueda */}
-          <div className="search-section">
+          <section className="search-section">
             <input 
               type="text" 
+              className="search-input"
               placeholder="Buscar por nombre o descripción..." 
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
-          </div>
+          </section>
           
-          {/* Sección para añadir anime */}
-          <div className="add-section">
+          <section className="add-section">
             <h2>Añadir Nuevo Anime</h2>
-            <form onSubmit={addUser}>
-              <div>
+            <form onSubmit={addUser} className="add-form">
+              <div className="form-group">
+                <label htmlFor="anime-name">Nombre:</label>
                 <input 
+                  id="anime-name"
                   type="text" 
                   placeholder="Nombre del anime" 
                   value={newName}
@@ -142,39 +243,41 @@
                   required
                 />
               </div>
-              <div>
+              
+              <div className="form-group">
+                <label htmlFor="anime-description">Descripción:</label>
                 <textarea 
-                  placeholder="Descripción del anime" 
+                  id="anime-description"
+                  placeholder="Breve descripción del anime" 
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
                   required
                 />
               </div>
-              <button type="submit">Añadir Anime</button>
+              
+              <button type="submit" className="add-button">Añadir Anime</button>
             </form>
-          </div>
+          </section>
           
-          {/* Sección de resultados */}
-          <div className="results-section">
+          <section className="results-section">
             <h2>Lista de Animes ({filteredUsers.length})</h2>
             {filteredUsers.length === 0 ? (
-              <p>No se encontraron animes con ese criterio de búsqueda.</p>
+              <p className="no-results">No se encontraron animes con ese criterio de búsqueda.</p>
             ) : (
-              <ul>
+              <ul className="anime-list">
                 {filteredUsers.map(user => (
-                  <li key={user.id}>
+                  <li key={user.id} className="anime-item">
                     <div className="anime-name">{user.name}</div>
-                    <div>{user.description}</div>
+                    <div className="anime-description">{user.description}</div>
                   </li>
                 ))}
               </ul>
             )}
-          </div>
+          </section>
         </div>
       );
     };
 
-    // Renderizar
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<UserSearch />);
   </script>
