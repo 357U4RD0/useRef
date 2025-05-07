@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<<<<<<< HEAD
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Buscador de Animes - Ejercicio useMemo</title>
@@ -146,12 +147,112 @@
       .add-button {
         width: 100%;
       }
+=======
+  <meta charset="UTF-8" />
+  <title>Cronómetro</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #eaf0f6;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #ffffff;
+      width: 380px;
+      height: 500px;
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 1.2rem;
+      border-bottom: 1px solid #d6dfe9;
+      background-color: #f8fbfd;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.6rem;
+      margin: 0;
+      color: #2c3e50;
+    }
+
+    .time {
+      font-size: 2.4rem;
+      text-align: center;
+      margin: 1rem 0;
+      color: #34495e;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin: 0 1rem 1rem;
+    }
+
+    button {
+      flex: 1;
+      padding: 0.6rem;
+      font-size: 1rem;
+      background-color: #dbe7f3;
+      border: 1px solid #a3b9d3;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #2c3e50;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #c9dced;
+    }
+
+    .sessions {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      background-color: #f6f9fc;
+      border-top: 1px solid #d6dfe9;
+    }
+
+    h2 {
+      font-size: 1rem;
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      color: #2c3e50;
+    }
+
+    ul {
+      padding-left: 1rem;
+      margin: 0;
+    }
+
+    li {
+      font-size: 0.95rem;
+      margin-bottom: 0.4rem;
+      color: #37474f;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: #707b8a;
+      margin: 0;
+>>>>>>> bb8cd4452bd31d724504e95855b8ed0a779b20c8
     }
   </style>
 </head>
 <body>
   <div id="root"></div>
 
+<<<<<<< HEAD
   <script type="text/babel">
     const { useState, useMemo } = React;
     
@@ -213,10 +314,48 @@
           setNewName('');
           setNewDescription('');
         }
+=======
+  <!-- React y ReactDOM desde CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  
+  <!-- Babel para JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    function Stopwatch() {
+      const [seconds, setSeconds] = useState(0);
+      const [isRunning, setIsRunning] = useState(false);
+      const [sessions, setSessions] = useState([]);
+      const timerRef = useRef(null);
+
+      useEffect(() => {
+        if (isRunning) {
+          timerRef.current = setInterval(() => {
+            setSeconds(prev => prev + 1);
+          }, 1000);
+        } else {
+          clearInterval(timerRef.current);
+        }
+
+        return () => clearInterval(timerRef.current);
+      }, [isRunning]);
+
+      const toggleRunning = () => setIsRunning(prev => !prev);
+      const reset = () => {
+        setIsRunning(false);
+        setSeconds(0);
+      };
+      const saveSession = () => {
+        setSessions(prev => [...prev, seconds]);
+>>>>>>> bb8cd4452bd31d724504e95855b8ed0a779b20c8
       };
 
       return (
         <div className="container">
+<<<<<<< HEAD
           <h1>Buscador de Animes</h1>
           
           <section className="search-section">
@@ -280,11 +419,46 @@
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<UserSearch />);
+=======
+          <div className="header">
+            <h1>Cronómetro</h1>
+            <div className="time">{seconds} segundos</div>
+            <div className="buttons">
+              <button onClick={toggleRunning}>
+                {isRunning ? "Pausar" : "Iniciar"}
+              </button>
+              <button onClick={reset}>Reiniciar</button>
+              <button onClick={saveSession}>Guardar</button>
+            </div>
+          </div>
+
+          <div className="sessions">
+            <h2>Sesiones guardadas</h2>
+            {sessions.length === 0 ? (
+              <p>No hay sesiones guardadas.</p>
+            ) : (
+              <ul>
+                {sessions.map((s, i) => (
+                  <li key={i}>Sesión {i + 1}: {s} segundos</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<Stopwatch />);
+>>>>>>> bb8cd4452bd31d724504e95855b8ed0a779b20c8
   </script>
 <footer style="text-align: center; margin-top: 40px; color: #777;">
   <p>
     Ver proyecto en 
+<<<<<<< HEAD
     <a href="https://github.com/357U4RD0/useMemo" target="_blank" rel="noopener noreferrer">
+=======
+    <a href="https://github.com/357U4RD0/useRef" target="_blank" rel="noopener noreferrer">
+>>>>>>> bb8cd4452bd31d724504e95855b8ed0a779b20c8
       GitHub
     </a>
   </p>
