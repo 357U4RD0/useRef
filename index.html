@@ -2,10 +2,103 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Stopwatch Intermedio</title>
+  <title>Cronómetro</title>
   <style>
-    body { font-family: sans-serif; text-align: center; margin-top: 40px; }
-    .buttons button { margin: 0.5rem; padding: 0.5rem 1rem; font-size: 1rem; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #eaf0f6;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #ffffff;
+      width: 380px;
+      height: 500px;
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 1.2rem;
+      border-bottom: 1px solid #d6dfe9;
+      background-color: #f8fbfd;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.6rem;
+      margin: 0;
+      color: #2c3e50;
+    }
+
+    .time {
+      font-size: 2.4rem;
+      text-align: center;
+      margin: 1rem 0;
+      color: #34495e;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin: 0 1rem 1rem;
+    }
+
+    button {
+      flex: 1;
+      padding: 0.6rem;
+      font-size: 1rem;
+      background-color: #dbe7f3;
+      border: 1px solid #a3b9d3;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #2c3e50;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #c9dced;
+    }
+
+    .sessions {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      background-color: #f6f9fc;
+      border-top: 1px solid #d6dfe9;
+    }
+
+    h2 {
+      font-size: 1rem;
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      color: #2c3e50;
+    }
+
+    ul {
+      padding-left: 1rem;
+      margin: 0;
+    }
+
+    li {
+      font-size: 0.95rem;
+      margin-bottom: 0.4rem;
+      color: #37474f;
+    }
+
+    p {
+      font-size: 0.9rem;
+      color: #707b8a;
+      margin: 0;
+    }
   </style>
 </head>
 <body>
@@ -30,39 +123,50 @@
       useEffect(() => {
         if (isRunning) {
           timerRef.current = setInterval(() => {
-            setSeconds((prev) => prev + 1);
+            setSeconds(prev => prev + 1);
           }, 1000);
         } else {
           clearInterval(timerRef.current);
         }
+
         return () => clearInterval(timerRef.current);
       }, [isRunning]);
 
-      const handleReset = () => {
-        setSeconds(0);
+      const toggleRunning = () => setIsRunning(prev => !prev);
+      const reset = () => {
         setIsRunning(false);
+        setSeconds(0);
       };
-
-      const handleSaveSession = () => {
-        setSessions([...sessions, seconds]);
+      const saveSession = () => {
+        setSessions(prev => [...prev, seconds]);
       };
 
       return (
-        <div>
-          <h1>⏱ Tiempo: {seconds}s</h1>
-          <div className="buttons">
-            <button onClick={() => setIsRunning((prev) => !prev)}>
-              {isRunning ? "⏸ Pausar" : "▶️ Iniciar"}
-            </button>
-            <button onClick={handleReset}>🔁 Reiniciar</button>
-            <button onClick={handleSaveSession}>💾 Guardar</button>
+        <div className="container">
+          <div className="header">
+            <h1>Cronómetro</h1>
+            <div className="time">{seconds} segundos</div>
+            <div className="buttons">
+              <button onClick={toggleRunning}>
+                {isRunning ? "Pausar" : "Iniciar"}
+              </button>
+              <button onClick={reset}>Reiniciar</button>
+              <button onClick={saveSession}>Guardar</button>
+            </div>
           </div>
-          <h2>Sesiones:</h2>
-          <ul>
-            {sessions.map((s, i) => (
-              <li key={i}>#{i + 1}: {s}s</li>
-            ))}
-          </ul>
+
+          <div className="sessions">
+            <h2>Sesiones guardadas</h2>
+            {sessions.length === 0 ? (
+              <p>No hay sesiones guardadas.</p>
+            ) : (
+              <ul>
+                {sessions.map((s, i) => (
+                  <li key={i}>Sesión {i + 1}: {s} segundos</li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       );
     }
