@@ -2,7 +2,11 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Stopwatch</title>
+  <title>Stopwatch Intermedio</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 40px; }
+    .buttons button { margin: 0.5rem; padding: 0.5rem 1rem; font-size: 1rem; }
+  </style>
 </head>
 <body>
   <div id="root"></div>
@@ -10,7 +14,7 @@
   <!-- React y ReactDOM desde CDN -->
   <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-
+  
   <!-- Babel para JSX -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
@@ -20,6 +24,7 @@
     function Stopwatch() {
       const [seconds, setSeconds] = useState(0);
       const [isRunning, setIsRunning] = useState(false);
+      const [sessions, setSessions] = useState([]);
       const timerRef = useRef(null);
 
       useEffect(() => {
@@ -33,12 +38,31 @@
         return () => clearInterval(timerRef.current);
       }, [isRunning]);
 
+      const handleReset = () => {
+        setSeconds(0);
+        setIsRunning(false);
+      };
+
+      const handleSaveSession = () => {
+        setSessions([...sessions, seconds]);
+      };
+
       return (
         <div>
-          <h1>Tiempo: {seconds}s</h1>
-          <button onClick={() => setIsRunning((prev) => !prev)}>
-            {isRunning ? "Pausar" : "Iniciar"}
-          </button>
+          <h1>⏱ Tiempo: {seconds}s</h1>
+          <div className="buttons">
+            <button onClick={() => setIsRunning((prev) => !prev)}>
+              {isRunning ? "⏸ Pausar" : "▶️ Iniciar"}
+            </button>
+            <button onClick={handleReset}>🔁 Reiniciar</button>
+            <button onClick={handleSaveSession}>💾 Guardar</button>
+          </div>
+          <h2>Sesiones:</h2>
+          <ul>
+            {sessions.map((s, i) => (
+              <li key={i}>#{i + 1}: {s}s</li>
+            ))}
+          </ul>
         </div>
       );
     }
