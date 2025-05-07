@@ -3,29 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Buscador de Animes - Básico</title>
+  <title>Buscador de Animes - Intermedio</title>
   
-  <!-- CDN de React -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
   <style>
-    /* Estilos mínimos básicos */
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
     }
+    
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    
     input, textarea {
       margin-bottom: 10px;
-      padding: 5px;
-      width: 300px;
+      padding: 8px;
+      width: 100%;
+      border: 1px solid #ddd;
     }
+    
     button {
-      padding: 5px 10px;
+      padding: 8px 15px;
+      background-color: #4a6ea9;
+      color: white;
+      border: none;
+      cursor: pointer;
     }
+    
+    .search-section, .add-section, .results-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+    
+    ul {
+      padding-left: 0;
+      list-style-type: none;
+    }
+    
     li {
-      margin-bottom: 10px;
+      margin-bottom: 15px;
+      padding: 10px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+    }
+    
+    .anime-name {
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 5px;
     }
   </style>
 </head>
@@ -33,29 +68,39 @@
   <div id="root"></div>
 
   <script type="text/babel">
-    // Componente básico
+    const { useState, useMemo } = React;
+    
     const UserSearch = () => {
-      // Datos de usuarios iniciales (solo 3)
-      const [users, setUsers] = React.useState([
-        { id: 1, name: "One Piece", description: "Luffy y su tripulación navegan por la Grand Line en busca del legendario tesoro One Piece." },
-        { id: 2, name: "Attack on Titan", description: "La humanidad lucha por sobrevivir contra titanes que devoran humanos." },
-        { id: 3, name: "Naruto", description: "Un joven ninja busca reconocimiento y aspira a convertirse en el líder de su aldea." }
+      const [users, setUsers] = useState([
+        { id: 1, name: "One Piece", description: "Luffy y su tripulación navegan por la Grand Line en busca del legendario tesoro One Piece para convertirse en el Rey de los Piratas." },
+        { id: 2, name: "Attack on Titan", description: "La humanidad lucha por sobrevivir contra gigantes humanoides llamados titanes que devoran humanos sin razón aparente." },
+        { id: 3, name: "Naruto", description: "Un joven ninja con un demonio zorro sellado en su interior busca reconocimiento y aspira a convertirse en el líder de su aldea." },
+        { id: 4, name: "Demon Slayer", description: "Tanjiro Kamado busca una cura para su hermana convertida en demonio mientras lucha contra demonios que amenazan la humanidad." },
+        { id: 5, name: "My Hero Academia", description: "En un mundo donde el 80% de la población tiene superpoderes, un chico sin poderes lucha por convertirse en el héroe número uno." },
+        { id: 6, name: "Death Note", description: "Un estudiante encuentra un cuaderno sobrenatural que le permite matar a cualquiera escribiendo su nombre mientras es perseguido por un detective." },
+        { id: 7, name: "Fullmetal Alchemist", description: "Dos hermanos alquimistas buscan la piedra filosofal para recuperar sus cuerpos después de un fallido intento de resucitar a su madre." },
+        { id: 8, name: "Hunter x Hunter", description: "Un joven parte en busca de su padre convirtiéndose en un cazador profesional y enfrentando numerosos desafíos." },
+        { id: 9, name: "Jujutsu Kaisen", description: "Estudiantes de hechicería combaten maldiciones, manifestaciones físicas de emociones negativas de los humanos." },
+        { id: 10, name: "Tokyo Ghoul", description: "Un estudiante universitario se convierte en mitad ghoul después de un trasplante, teniendo que sobrevivir en ambos mundos." },
+        { id: 11, name: "Dragon Ball", description: "Sigue las aventuras de Goku desde su infancia hasta la adultez mientras entrena en artes marciales y defiende la Tierra de poderosos enemigos." },
+        { id: 12, name: "Steins;Gate", description: "Un autoproclamado científico loco descubre accidentalmente cómo enviar mensajes al pasado, alterando la línea temporal." },
+        { id: 13, name: "Cowboy Bebop", description: "Un grupo de cazarrecompensas viaja por el sistema solar a bordo de la nave Bebop en un futuro distópico." },
+        { id: 14, name: "Evangelion", description: "Adolescentes pilotan robots gigantes para defender a la humanidad de seres misteriosos en un mundo post-apocalíptico." },
+        { id: 15, name: "Code Geass", description: "Un príncipe exiliado con el poder de controlar mentes lidera una rebelión contra el imperio que conquistó su nación." }
       ]);
 
-      // Estado para la búsqueda
-      const [searchText, setSearchText] = React.useState('');
-      
-      // Estados para nuevo usuario
-      const [newName, setNewName] = React.useState('');
-      const [newDescription, setNewDescription] = React.useState('');
+      const [searchText, setSearchText] = useState('');
+      const [newName, setNewName] = useState('');
+      const [newDescription, setNewDescription] = useState('');
 
-      // Filtrado básico (sin useMemo todavía)
-      const filteredUsers = users.filter(user => {
-        return user.name.toLowerCase().includes(searchText.toLowerCase()) || 
-               user.description.toLowerCase().includes(searchText.toLowerCase());
-      });
+      const filteredUsers = useMemo(() => {
+        console.log("Recalculando lista filtrada...");
+        return users.filter(user => {
+          return user.name.toLowerCase().includes(searchText.toLowerCase()) || 
+                 user.description.toLowerCase().includes(searchText.toLowerCase());
+        });
+      }, [users, searchText]);
       
-      // Función para agregar usuario
       const addUser = (e) => {
         e.preventDefault();
         if (newName && newDescription) {
@@ -74,18 +119,18 @@
         <div>
           <h1>Buscador de Animes</h1>
           
-          {/* Búsqueda */}
-          <div>
+          {/* Sección de búsqueda */}
+          <div className="search-section">
             <input 
               type="text" 
-              placeholder="Buscar anime..." 
+              placeholder="Buscar por nombre o descripción..." 
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
           </div>
           
-          {/* Formulario añadir */}
-          <div>
+          {/* Sección para añadir anime */}
+          <div className="add-section">
             <h2>Añadir Nuevo Anime</h2>
             <form onSubmit={addUser}>
               <div>
@@ -94,29 +139,36 @@
                   placeholder="Nombre del anime" 
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
+                  required
                 />
               </div>
               <div>
                 <textarea 
-                  placeholder="Descripción" 
+                  placeholder="Descripción del anime" 
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
+                  required
                 />
               </div>
-              <button type="submit">Añadir</button>
+              <button type="submit">Añadir Anime</button>
             </form>
           </div>
           
-          {/* Lista de animes */}
-          <div>
-            <h2>Animes ({filteredUsers.length})</h2>
-            <ul>
-              {filteredUsers.map(user => (
-                <li key={user.id}>
-                  <strong>{user.name}</strong>: {user.description}
-                </li>
-              ))}
-            </ul>
+          {/* Sección de resultados */}
+          <div className="results-section">
+            <h2>Lista de Animes ({filteredUsers.length})</h2>
+            {filteredUsers.length === 0 ? (
+              <p>No se encontraron animes con ese criterio de búsqueda.</p>
+            ) : (
+              <ul>
+                {filteredUsers.map(user => (
+                  <li key={user.id}>
+                    <div className="anime-name">{user.name}</div>
+                    <div>{user.description}</div>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
       );
