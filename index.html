@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscador de Animes - Básico</title>
+  
+  <!-- CDN de React -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <style>
+    /* Estilos mínimos básicos */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    input, textarea {
+      margin-bottom: 10px;
+      padding: 5px;
+      width: 300px;
+    }
+    button {
+      padding: 5px 10px;
+    }
+    li {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // Componente básico
+    const UserSearch = () => {
+      // Datos de usuarios iniciales (solo 3)
+      const [users, setUsers] = React.useState([
+        { id: 1, name: "One Piece", description: "Luffy y su tripulación navegan por la Grand Line en busca del legendario tesoro One Piece." },
+        { id: 2, name: "Attack on Titan", description: "La humanidad lucha por sobrevivir contra titanes que devoran humanos." },
+        { id: 3, name: "Naruto", description: "Un joven ninja busca reconocimiento y aspira a convertirse en el líder de su aldea." }
+      ]);
+
+      // Estado para la búsqueda
+      const [searchText, setSearchText] = React.useState('');
+      
+      // Estados para nuevo usuario
+      const [newName, setNewName] = React.useState('');
+      const [newDescription, setNewDescription] = React.useState('');
+
+      // Filtrado básico (sin useMemo todavía)
+      const filteredUsers = users.filter(user => {
+        return user.name.toLowerCase().includes(searchText.toLowerCase()) || 
+               user.description.toLowerCase().includes(searchText.toLowerCase());
+      });
+      
+      // Función para agregar usuario
+      const addUser = (e) => {
+        e.preventDefault();
+        if (newName && newDescription) {
+          const newUser = {
+            id: users.length + 1,
+            name: newName,
+            description: newDescription
+          };
+          setUsers([...users, newUser]);
+          setNewName('');
+          setNewDescription('');
+        }
+      };
+
+      return (
+        <div>
+          <h1>Buscador de Animes</h1>
+          
+          {/* Búsqueda */}
+          <div>
+            <input 
+              type="text" 
+              placeholder="Buscar anime..." 
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+          </div>
+          
+          {/* Formulario añadir */}
+          <div>
+            <h2>Añadir Nuevo Anime</h2>
+            <form onSubmit={addUser}>
+              <div>
+                <input 
+                  type="text" 
+                  placeholder="Nombre del anime" 
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                />
+              </div>
+              <div>
+                <textarea 
+                  placeholder="Descripción" 
+                  value={newDescription}
+                  onChange={(e) => setNewDescription(e.target.value)}
+                />
+              </div>
+              <button type="submit">Añadir</button>
+            </form>
+          </div>
+          
+          {/* Lista de animes */}
+          <div>
+            <h2>Animes ({filteredUsers.length})</h2>
+            <ul>
+              {filteredUsers.map(user => (
+                <li key={user.id}>
+                  <strong>{user.name}</strong>: {user.description}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      );
+    };
+
+    // Renderizar
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<UserSearch />);
+  </script>
+</body>
+</html>
